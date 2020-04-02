@@ -1,0 +1,269 @@
+openapi: 3.0.1
+info:
+  title: Test
+  version: 0.0.1
+  description: Описание API управления локальными пользователями системы
+servers:
+  - url: http://localhost:8080/api
+    description: Development server
+  - url: https://localhost:8080/api
+    description: Development server with TLS Profile
+tags:
+  - name: UserResource
+    description: Ресурс для управления пользователями
+  - name: RoleResource
+    description: Ресурс управления правами пользователей
+paths:
+  /user:
+    get:
+      operationId: getUsers
+      description: Получение списка пользователей
+      tags:
+        - UserResource
+      parameters:
+        - name: localOnly
+          in: query
+          schema:
+            type: boolean
+            default: true
+        - name: search
+          in: query
+          description: строка поиска
+          schema:
+            type: string
+        - $ref: './common.yml#/components/parameters/Offset'
+        - $ref: './common.yml#/components/parameters/Limit'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+        default:
+          $ref: './common.yml#/components/responses/ProblemResponse'
+    post:
+      operationId: createUser
+      description: Создание нового пользователя
+      tags:
+        - UserResource
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: './common.yml#/components/responses/ProblemResponse'
+  /user/{username}:
+    get:
+      operationId: getUserDetails
+      description: Получить параметры пользователя
+      tags:
+        - UserResource
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Параметры пользователя
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetails'
+    put:
+      operationId: updateUser
+      description: Изменения параметров пользователя
+      tags:
+        - UserResource
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDetails'
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: './common.yml#/components/responses/ProblemResponse'
+  /role:
+    get:
+      operationId: getRoles
+      description: Получить список доступных ролей
+      tags:
+        - RoleResource
+      parameters:
+        - $ref: './common.yml#/components/parameters/Offset'
+        - $ref: './common.yml#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Список ролей
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Roles'
+        default:
+          $ref: './common.yml#/components/responses/ProblemResponse'
+    post:
+      operationId: addRole
+      description: Добавить роль
+      tags:
+        - RoleResource
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Role'
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: './common.yml#/components/responses/ProblemResponse'
+  /role/{roleName}:
+    get:
+      operationId: getRolePermissions
+      description: Получить список разрешений для роли
+      tags:
+        - RoleResource
+      parameters:
+        - name: roleName
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: './common.yml#/components/parameters/Offset'
+        - $ref: './common.yml#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Список разрешений для роли
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permissions'
+        default:
+          $ref: './common.yml#/components/responses/ProblemResponse'
+    put:
+      operationId: setRolePermissions
+      description: Задать список разрешений для роли
+      tags:
+        - RoleResource
+      parameters:
+        - name: roleName
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Permission'
+      responses:
+        '200':
+          description: OK
+        default:
+          $ref: './common.yml#/components/responses/ProblemResponse'
+  /permission:
+    get:
+      operationId: getPermissions
+      description: Получить список доступных разрешений
+      tags:
+        - RoleResource
+      parameters:
+        - $ref: './common.yml#/components/parameters/Offset'
+        - $ref: './common.yml#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Список разрешений
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permissions'
+        default:
+          $ref: './common.yml#/components/responses/ProblemResponse'
+components:
+  schemas:
+    Users:
+      type: object
+      allOf:
+        - $ref: './common.yml#/components/schemas/PaginationResponse'
+        - type: object
+          properties:
+            userList:
+              type: array
+              items:
+                $ref: '#/components/schemas/User'
+    User:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          format: password
+        details:
+          $ref: '#/components/schemas/UserDetails'
+    UserDetails:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        isBlocked:
+          type: boolean
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+      required:
+        - login
+    Roles:
+      type: object
+      allOf:
+        - $ref: './common.yml#/components/schemas/PaginationResponse'
+        - type: object
+          properties:
+            roleList:
+              type: array
+              items:
+                $ref: '#/components/schemas/Role'
+    Role:
+      type: object
+      properties:
+        roleName:
+          type: string
+        description:
+          type: string
+    Permissions:
+      type: object
+      allOf:
+        - $ref: './common.yml#/components/schemas/PaginationResponse'
+        - type: object
+          properties:
+            permissionList:
+              type: array
+              items:
+                $ref: '#/components/schemas/Permission'
+    Permission:
+      type: object
+      properties:
+        permissionName:
+          type: string
+        description:
+          type: string
