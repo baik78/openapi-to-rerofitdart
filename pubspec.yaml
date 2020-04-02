@@ -1,6 +1,6 @@
 name: oretgen
-description: OpenApi 3 to retrofit dart venerator.
-version: 0.0.1
+description: OpenApi 3 to retrofit dart venerator. It makes models and retrofit skeleton file for future generation.
+version: 0.0.2
 homepage: https://github.com/baik78/openapi-to-rerofitdart
 
 environment:

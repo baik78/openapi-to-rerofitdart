@@ -1,4 +1,4 @@
-##Oretgen 
+## Oretgen 
 
 A small dart library to generate [retrofit](https://pub.dev/packages/retrofit) skeleton from
 open api yaml file with generated models.
@@ -26,7 +26,7 @@ Use command
 ./bin/oretgen -p  $(pwd)/example/test.yaml -o $(pwd)/example
 ```
 
-###Warning
+### Warning
 This is alpha version. And may be have errors.
 Generator makes objects only from components/scheme 
 

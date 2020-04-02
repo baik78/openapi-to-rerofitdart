@@ -25,7 +25,7 @@ class ModelsGenerator {
     }
   }
 
-  Future<String> _makeScheme(String name, YamlMap data, YamlMap parent) async {
+  Future<void> _makeScheme(String name, YamlMap data, YamlMap parent) async {
     if(data['type'] == null && data['allOf'] != null ) {
       await _makeClass(name, data, parent);
     }
@@ -36,10 +36,9 @@ class ModelsGenerator {
       case 'array':
         break;
     }
-
   }
 
-  void _makeClass(String name, YamlMap data, YamlMap parent) async {
+  Future<void> _makeClass(String name, YamlMap data, YamlMap parent) async {
     var result = StringBuffer();
 
     if(data['properties'] != null) {

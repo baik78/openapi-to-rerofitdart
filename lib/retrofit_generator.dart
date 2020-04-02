@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'utils.dart';
@@ -15,7 +14,7 @@ class RetrofitGenerator {
   RetrofitGenerator(this.paths, {this.path, this.sourcePath, this.multiple = false}): assert(paths == null);
 
 
-  void generate() async {
+  Future<void> generate() async {
     final modelPath = '$path/models/';
     var importBody = StringBuffer();
 

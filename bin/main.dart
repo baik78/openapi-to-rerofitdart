@@ -31,7 +31,7 @@ void main(List<String> arguments) async {
     return;
   }
 
-  if(argResultPath.arguments.contains('--help') || argResultPath.arguments.contains('-h') || argResultPath.arguments.length == 0) {
+  if(argResultPath.arguments.contains('--help') || argResultPath.arguments.contains('-h') || argResultPath.arguments.isEmpty) {
     print(_help());
     return;
   }
